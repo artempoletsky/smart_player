@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<script type="text/javascript" src="../lib/jquery-1.9.1.js"></script>
+		
+		<link rel="stylesheet" href="lib/jasmine.css" />
+
+		<script type="text/javascript" src="lib/jasmine.js"></script>
+		<script type="text/javascript" src="lib/jasmine-html.js"></script>
+
+
+        <script type="text/javascript" src="lib/event_emitter.js"></script>
+        <script type="text/javascript" src="src/fake.js"></script>
+        <script type="text/javascript" src="src/html5.js"></script>
+
+		<script type="text/javascript" src="spec.js"></script>
+
+
+		
+		
+
+		<script type="text/javascript">
+			(function(){
+				var jasmineEnv = jasmine.getEnv();
+				jasmineEnv.updateInterval = 250;
+				var htmlReporter = new jasmine.HtmlReporter();
+				jasmineEnv.addReporter(htmlReporter);
+				jasmineEnv.specFilter = function(spec) {
+					return htmlReporter.specFilter(spec);
+				};
+				var currentWindowOnload = window.onload;
+				window.onload = function() {
+					if (currentWindowOnload) {
+						currentWindowOnload();
+					}
+
+					jasmineEnv.execute();
+				};
+			})()
+		</script>
+		
+    </head>
+    <body>
+
+    </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "smart_player",
+  "version": "0.0.0",
+  "description": "Crossplatform media player for Smart TV",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uistler/smart_player.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "50631a4900e80f27b2e408d6183758e26fe7fda5",
+  "devDependencies": {
+    "grunt-contrib-watch": "~0.4.4",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-concat": "~0.3.0"
+  }
+}
