@@ -1,7 +1,7 @@
 Player.extend({
     init: function(){
         var self=this;
-        this.$video_container=$('<video id="smart_player"></video>');
+        this.$video_container=$('<video id="smart_player" style="position: absolute; left: 0; top: 0;"></video>');
         $('body').append(this.$video_container);
 
         this.$video_container.on('playing', function(){
