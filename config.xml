@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+    <category>Video</category>
+    <ThumbIcon></ThumbIcon>
+    <BigThumbIcon></BigThumbIcon>
+    <ListIcon></ListIcon>
+    <BigListIcon></BigListIcon>
+    <autoUpdate>y</autoUpdate>
+    <type>user</type>
+    <cplogo></cplogo>
+    <cpname>Video test</cpname>
+    <cpauthjs>Video test</cpauthjs>
+    <login>n</login>
+    <ver>0.500</ver>
+    <mgrver>0.1</mgrver>
+    <fullwidget>y</fullwidget>
+    <flashplayer>y</flashplayer>
+    <srcctl>n</srcctl>
+    <ticker>n</ticker>
+    <childlock>n</childlock>
+    <audiomute>n</audiomute>
+    <videomute>n</videomute>
+    <movie>y</movie>
+    <dcont>y</dcont>
+    <widgetname>Video test</widgetname>
+    <description>Video test</description>
+    <width>1280</width>
+    <height>720</height>
+    <network>y</network>
+    <author>
+        <name></name>
+        <email></email>
+        <link></link>
+        <organization></organization>
+    </author>
+</widget>
