@@ -1,4 +1,7 @@
 var Player = {
+    init: function () {
+        console.log(43234234);
+    },
     play: function () {
         this.trigger('ready');
     }
@@ -23,5 +26,19 @@ var Player = {
         eventProto = Events.prototype;
     }
 
-    extendFunction(Player, eventProto);
+    Player.extend = function (proto) {
+        extendFunction(this, proto);
+    };
+
+    Player.extend(eventProto);
+
+    if (window.$&& false) {
+        $(function () {
+            Player.init()
+        });
+    } else {
+        window.addEventListener('DOMContentLoaded', function () {
+            Player.init();
+        });
+    }
 }());
