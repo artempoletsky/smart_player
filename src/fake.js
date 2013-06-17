@@ -1,9 +1,33 @@
 var Player = {
     init: function () {
-        console.log(43234234);
+        this._state = 'stop';
+        this._init();
     },
-    play: function () {
+    _init: function () {
+
+    },
+    play: function (options) {
+        this.stop();
+        this._state = 'play';
+        this._play(options);
+    },
+    _play: function () {
         this.trigger('ready');
+    },
+    stop: function (silent) {
+        if (this._state != 'stop') {
+            this._stop();
+            if (!silent) {
+                this.trigger('stop');
+            }
+        }
+        this._state = 'stop';
+    },
+    _stop: function () {
+
+    },
+    videoInfo: {
+
     }
 };
 
@@ -32,7 +56,7 @@ var Player = {
 
     Player.extend(eventProto);
 
-    if (window.$&& false) {
+    if (window.$ && false) {
         $(function () {
             Player.init()
         });
