@@ -3,7 +3,34 @@
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+
+        <script type="text/javascript">
+            function writeIfSamsung(content) {
+                if (~navigator.userAgent.toLowerCase().indexOf('maple')) {
+                    document.write(content);
+                }
+            }
+        </script>
+
+
+
+        <script type="text/javascript">
+            writeIfSamsung('<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/../webapi/1.0/deviceapis.js"><\/script>');
+        </script>
+
+        <script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+        <script type="text/javascript">
+            writeIfSamsung('<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/../webapi/1.0/serviceapis.js"><\/script>\n\
+		<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/2.0.0/extlib/jquery.tmpl.js"><\/script>\n\
+		<script type="text/javascript" src="$MANAGER_WIDGET/Common/Define.js"><\/script>\n\
+		<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/2.0.0/sf.min.js"><\/script>\n\
+		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/Widget.js"><\/script>\n\
+		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/TVKeyValue.js"><\/script>\n\
+		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/Plugin.js"><\/script>');
+        </script>
+
+
+
 		
 		<link rel="stylesheet" href="lib/jasmine.css" />
 
@@ -14,6 +41,7 @@
         <script type="text/javascript" src="lib/event_emitter.js"></script>
         <script type="text/javascript" src="src/fake.js"></script>
         <script type="text/javascript" src="src/html5.js"></script>
+        <script type="text/javascript" src="src/samsung.js"></script>
 
 
         <script type="text/javascript" src="config.js"></script>

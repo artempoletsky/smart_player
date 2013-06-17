@@ -1,16 +1,16 @@
 describe('Player', function () {
 
     var currentURL = Config.trailer;
+    var currentType='';
 
     beforeEach(function () {
 
         var spy2 = jasmine.createSpy('bufferingBegin handler');
         runs(function () {
-
-
             Player.on('bufferingBegin', spy2);
             Player.play({
-                url: currentURL
+                url: currentURL,
+                type: currentType
             });
         });
 
@@ -62,8 +62,8 @@ describe('Player', function () {
         }, 'ready have been triggered', 20000);
         runs(function () {
             var info = Player.videoInfo;
-            expect(info.height).toBe(Config.trailerHeight);
             expect(info.width).toBe(Config.trailerWidth);
+            expect(info.height).toBe(Config.trailerHeight);
             expect(formatDuration(info.duration)).toBe(Config.trailerDuration);
         });
         currentURL = Config.movie;
@@ -108,5 +108,17 @@ describe('Player', function () {
         runs(function () {
             expect(Math.round((new Date().getTime() - date) / 1000)).toBe(2);
         });
+
+        currentURL = Config.hls;
+        currentType= 'hls';
+    });
+
+
+    it('support hls', function () {
+        var spy = jasmine.createSpy('ready handler');
+        Player.on('ready', spy);
+        waitsFor(function () {
+            return spy.calls.length == 1
+        }, 'ready have been triggered', 20000);
     });
 });
