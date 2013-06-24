@@ -1,78 +1,112 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-        <script type="text/javascript">
-            function writeIfSamsung(content) {
-                if (~navigator.userAgent.toLowerCase().indexOf('maple')) {
-                    document.write(content);
-                }
+    <script type="text/javascript">
+        function writeIfSamsung(content) {
+            if (~navigator.userAgent.toLowerCase().indexOf('maple')) {
+                document.write(content);
             }
-        </script>
+        }
+    </script>
 
 
+    <script type="text/javascript">
+        writeIfSamsung('<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/../webapi/1.0/deviceapis.js"><\/script>');
+    </script>
 
-        <script type="text/javascript">
-            writeIfSamsung('<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/../webapi/1.0/deviceapis.js"><\/script>');
-        </script>
-
-        <script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
-        <script type="text/javascript">
-            writeIfSamsung('<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/../webapi/1.0/serviceapis.js"><\/script>\n\
+    <script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        writeIfSamsung('<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/../webapi/1.0/serviceapis.js"><\/script>\n\
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/2.0.0/extlib/jquery.tmpl.js"><\/script>\n\
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/Define.js"><\/script>\n\
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/af/2.0.0/sf.min.js"><\/script>\n\
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/Widget.js"><\/script>\n\
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/TVKeyValue.js"><\/script>\n\
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/Plugin.js"><\/script>');
-        </script>
+    </script>
 
 
+    <link rel="stylesheet" href="lib/jasmine.css"/>
 
-		
-		<link rel="stylesheet" href="lib/jasmine.css" />
-
-		<script type="text/javascript" src="lib/jasmine.js"></script>
-		<script type="text/javascript" src="lib/jasmine-html.js"></script>
+    <script type="text/javascript" src="lib/jasmine.js"></script>
+    <script type="text/javascript" src="lib/jasmine-html.js"></script>
 
 
-        <script type="text/javascript" src="lib/event_emitter.js"></script>
-        <script type="text/javascript" src="src/fake.js"></script>
-        <script type="text/javascript" src="src/html5.js"></script>
-        <script type="text/javascript" src="src/samsung.js"></script>
+    <script type="text/javascript" src="lib/event_emitter.js"></script>
+    <script type="text/javascript" src="src/fake.js"></script>
+    <script type="text/javascript" src="src/html5.js"></script>
+    <script type="text/javascript" src="src/samsung.js"></script>
+    <script type="text/javascript" src="src/lg.js"></script>
 
 
-        <script type="text/javascript" src="config.js"></script>
-		<script type="text/javascript" src="spec.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+    <script type="text/javascript" src="spec.js"></script>
 
 
-		
-		
+    <script type="text/javascript">
+        (function () {
 
-		<script type="text/javascript">
-			(function(){
-				var jasmineEnv = jasmine.getEnv();
-				jasmineEnv.updateInterval = 250;
-				var htmlReporter = new jasmine.HtmlReporter();
-				jasmineEnv.addReporter(htmlReporter);
-				jasmineEnv.specFilter = function(spec) {
-					return htmlReporter.specFilter(spec);
-				};
-				var currentWindowOnload = window.onload;
-				window.onload = function() {
-					if (currentWindowOnload) {
-						currentWindowOnload();
-					}
+            var jasmineEnv = jasmine.getEnv();
+            jasmineEnv.updateInterval = 250;
+            var htmlReporter = new jasmine.HtmlReporter();
+            jasmineEnv.addReporter(htmlReporter);
+            jasmineEnv.specFilter = function (spec) {
+                return htmlReporter.specFilter(spec);
+            };
+            var currentWindowOnload = window.onload;
+            window.onload = function () {
+                Player.init();
+                if (currentWindowOnload) {
+                    currentWindowOnload();
+                }
 
-					jasmineEnv.execute();
-				};
-			})()
-		</script>
-        <style type="text/css"> video { opacity: 1;}</style>
-    </head>
-    <body>
+                jasmineEnv.execute();
+            };
+        })()
+    </script>
+    <style type="text/css">
+        video {
+            opacity: 1;
+        }
+        #HTMLReporter
+        {
+            z-index: 20;
+            position: relative;
+            background: #fff;
+        }
+        #log {
+            z-index: 30;
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #000;
+            background: yellow;
+            min-width: 500px;
+            min-height: 500px;
+        }
+    </style>
 
-    </body>
+    <script type="text/javascript">
+        writeIfSamsung('<object id="audio" border=0 classid="clsid:SAMSUNG-INFOLINK-AUDIO"></object>\n\
+			<object id="pluginObjectTV"  border=0   classid="clsid:SAMSUNG-INFOLINK-TV"   style="opacity:0.0; background-color:#000000;width:0px; height:0px;"></object>\n\
+			<object id="pluginObjectTVMW"  border=0   classid="clsid:SAMSUNG-INFOLINK-TVMW"   style="opacity:0.0; background-color:#000000;width:0px; height:0px;"></object>\n\
+			<object id="pluginObjectNetwork" border=0 classid="clsid:SAMSUNG-INFOLINK-NETWORK" style="opacity:0.0;background-color:#000000;width:0px;height:0px;"></object>\n\
+			<object id="pluginObjectNNavi" border=0 classid="clsid:SAMSUNG-INFOLINK-NNAVI" style="opacity:0.0;background-color:#000000;width:0px;height:0px;"></object>\n\
+			<object id="pluginDRM" classid="clsid:SAMSUNG-INFOLINK-SEF" style="visibility:hidden; position: absolute; width: 0px; height: 0px;"></object>\n\
+			<object id="pluginPlayer" border=0 classid="clsid:SAMSUNG-INFOLINK-PLAYER" style="position: absolute; left: 0; top: 0; width: 1280px; height: 720px;"></object>\n\
+			<object id="pluginExternal"    border=0 classid="clsid:SAMSUNG-INFOLINK-EXTERNALWIDGETINTERFACE" style="opacity:0.0;background-color:#000000;width:0px;height:0px;"></object>');
+    </script>
+</head>
+<body>
+<!--div id=log></div-->
+<!--div style="background: #fff;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1280px;
+            height: 720px; z-index: 1;"></div-->
+</body>
 </html>

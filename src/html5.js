@@ -59,6 +59,7 @@ Player.extend({
          */
     },
     _play: function (options) {
+        console.log(options.url);
         this.$video_container.attr('src', options.url);
         this.$video_container[0].play();
     },

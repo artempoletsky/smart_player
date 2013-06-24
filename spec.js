@@ -3,38 +3,11 @@ describe('Player', function () {
     var currentURL = Config.trailer;
     var currentType='';
 
-    beforeEach(function () {
 
-        var spy2 = jasmine.createSpy('bufferingBegin handler');
-        runs(function () {
-            Player.on('bufferingBegin', spy2);
-            Player.play({
-                url: currentURL,
-                type: currentType
-            });
-        });
-
-        /*waitsFor(function () {
-         return spy2.calls.length == 1
-         }, 'bufferingBegin have been triggered', 10000);*/
-
-        /**/
-
-
-    });
 
 
     afterEach(function () {
-        var spy2 = jasmine.createSpy('stop handler');
-        runs(function () {
-            Player.on('stop', spy2);
-            Player.stop();
-            expect(spy2).toHaveBeenCalled();
-        });
 
-        waitsFor(function () {
-            return spy2.calls.length == 1
-        }, 'stop have been triggered', 10000);
 
     });
 
@@ -54,23 +27,67 @@ describe('Player', function () {
         return (hours ? hours + ':' : '') + minutes + ":" + seconds;
     };
 
-    it('has video info', function () {
-        var spy = jasmine.createSpy('ready handler');
-        Player.on('ready', spy);
-        waitsFor(function () {
-            return spy.calls.length == 1
-        }, 'ready have been triggered', 20000);
-        runs(function () {
-            var info = Player.videoInfo;
-            expect(info.width).toBe(Config.trailerWidth);
-            expect(info.height).toBe(Config.trailerHeight);
-            expect(formatDuration(info.duration)).toBe(Config.trailerDuration);
+    describe('has video info, and ready event', function () {
+
+
+
+
+        it('support ready', function(){
+            var spy = jasmine.createSpy('ready handler');
+            Player.on('ready', spy);
+
+            runs(function () {
+                Player.play({
+                    url: Config.trailer
+                });
+            });
+            waitsFor(function () {
+                return spy.calls.length == 1
+            }, 'ready have been triggered', 2000);
         });
-        currentURL = Config.movie;
+
+        it('gets video duration', function(){
+            runs(function () {
+                var info = Player.videoInfo;
+                expect(formatDuration(info.duration)).toBe(Config.trailerDuration);
+            });
+        });
+
+        it('gets video resolution', function(){
+            runs(function () {
+                var info = Player.videoInfo;
+                expect(info.width).toBe(Config.trailerWidth);
+                expect(info.height).toBe(Config.trailerHeight);
+            });
+        });
+
+
+
+        var spyStop = jasmine.createSpy('stop handler');
+        runs(function () {
+            Player.on('stop', spyStop);
+            Player.stop();
+            expect(spyStop).toHaveBeenCalled();
+        });
+
+        waitsFor(function () {
+            return spyStop.calls.length == 1
+        }, 'stop have been triggered', 1000);
+
+
+
     });
 
 
-    it('support buffering and update time events', function () {
+    xit('support buffering and update time events', function () {
+
+
+        runs(function () {
+            Player.play({
+                url: Config.movie
+            });
+        });
+
         var spy = jasmine.createSpy('bufferingEnd handler');
 
         var spy2 = jasmine.createSpy('update handler');
@@ -109,12 +126,20 @@ describe('Player', function () {
             expect(Math.round((new Date().getTime() - date) / 1000)).toBe(2);
         });
 
-        currentURL = Config.hls;
-        currentType= 'hls';
+
     });
 
 
-    it('support hls', function () {
+    xit('support hls', function () {
+
+        runs(function () {
+            Player.play({
+                url: Config.hls,
+                type: 'hls'
+            });
+        });
+
+
         var spy = jasmine.createSpy('ready handler');
         Player.on('ready', spy);
         waitsFor(function () {

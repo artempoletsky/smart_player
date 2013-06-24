@@ -1,11 +1,8 @@
 var Player = {
     init: function () {
-        this._state = 'stop';
-        this._init();
-    },
-    _init: function () {
 
     },
+    _state: 'stop',
     play: function (options) {
         this.stop();
         this._state = 'play';

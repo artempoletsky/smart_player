@@ -1,55 +1,66 @@
 if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
     (function () {
         var safeApply = function (self, method, args) {
-            alert(method + ',' + args[0] + ',' + args[1] + ',' + args[2] + ',' + args[3]);
-            switch (args.length) {
-                case 0:
-                    return self[method]();
-                case 1:
-                    return self[method](args[0]);
-                case 2:
-                    return self[method](args[0], args[1]);
-                case 3:
-                    return self[method](args[0], args[1], args[2]);
-                case 4:
-                    return self[method](args[0], args[1], args[2], args[3]);
-                case 5:
-                    return self[method](args[0], args[1], args[2], args[3], args[4]);
-                case 6:
-                    return self[method](args[0], args[1], args[2], args[3], args[4], args[5]);
-                case 7:
-                    return self[method](args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
-                case 8:
-                    return self[method](args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+            try {
+                switch (args.length) {
+                    case 0:
+                        return self[method]();
+                    case 1:
+                        return self[method](args[0]);
+                    case 2:
+                        return self[method](args[0], args[1]);
+                    case 3:
+                        return self[method](args[0], args[1], args[2]);
+                    case 4:
+                        return self[method](args[0], args[1], args[2], args[3]);
+                    case 5:
+                        return self[method](args[0], args[1], args[2], args[3], args[4]);
+                    case 6:
+                        return self[method](args[0], args[1], args[2], args[3], args[4], args[5]);
+                    case 7:
+                        return self[method](args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+                    case 8:
+                        return self[method](args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 
+                }
+            } catch (e) {
+                throw e;
             }
         }
         Player.extend({
             usePlayerObject: true,
             init: function () {
-                if (this.usePlayerObject) {
-                    this.$plugin = $('<object id="pluginPlayer" border=0 classid="clsid:SAMSUNG-INFOLINK-PLAYER" style="position: absolute; left: 0; top: 0; width: 1280px; height: 720px;"></object>');
-                    this.plugin = this.$plugin[0];
-                    $('body').append(this.$plugin);
+                var self=this;
+                //document.body.onload=function(){
+                    if (self.usePlayerObject) {
+                        //self.$plugin = $('<object id="pluginPlayer" border=0 classid="clsid:SAMSUNG-INFOLINK-PLAYER" style="position: absolute; left: 0; top: 0; width: 1280px; height: 720px;"></object>');
+                        self.plugin = document.getElementById('pluginPlayer');
+                        $('body').append(self.$plugin);
 
 
-                } else {
-                    this.plugin = sf.core.sefplugin('Player');
+                    } else {
+                        self.plugin = sf.core.sefplugin('Player');
+                    }
 
-                }
 
-                this.plugin.OnStreamInfoReady = 'Player.OnStreamInfoReady';
-                //this.plugin.OnRenderingComplete = 'Player.OnRenderingComplete';
-                this.plugin.OnCurrentPlayTime = 'Player.OnCurrentPlayTime';
-                this.plugin.OnCurrentPlaybackTime = 'Player.OnCurrentPlayTime';
-                this.plugin.OnBufferingStart = 'Player.OnBufferingStart';
-                //this.plugin.OnBufferingProgress = 'Player.OnBufferingProgress';
-                this.plugin.OnBufferingComplete = 'Player.OnBufferingComplete';
-                //this.plugin.OnConnectionFailed = 'Player.onError';
-                //this.plugin.OnNetworkDisconnected = 'Player.onError';
-                //this.plugin.OnAuthenticationFailed = 'Player.OnAuthenticationFailed';
+                    if (!self.plugin) {
+                        throw new Error('failed to set plugin');
+                    }
 
-                this.plugin.OnEvent = 'Player.onEvent';
+                    self.plugin.OnStreamInfoReady = 'Player.OnStreamInfoReady';
+                    //self.plugin.OnRenderingComplete = 'Player.OnRenderingComplete';
+                    self.plugin.OnCurrentPlayTime = 'Player.OnCurrentPlayTime';
+                    self.plugin.OnCurrentPlaybackTime = 'Player.OnCurrentPlayTime';
+                    self.plugin.OnBufferingStart = 'Player.OnBufferingStart';
+                    //self.plugin.OnBufferingProgress = 'Player.OnBufferingProgress';
+                    self.plugin.OnBufferingComplete = 'Player.OnBufferingComplete';
+                    //self.plugin.OnConnectionFailed = 'Player.onError';
+                    //self.plugin.OnNetworkDisconnected = 'Player.onError';
+                    //self.plugin.OnAuthenticationFailed = 'Player.OnAuthenticationFailed';
+
+                    self.plugin.OnEvent = 'Player.onEvent';
+                //}
+
             },
             onEvent: function (event, arg1, arg2) {
 
@@ -110,7 +121,6 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                 this.videoInfo.duration = duration;
                 this.videoInfo.width = width * 1;
                 this.videoInfo.height = height * 1;
-                alert('ready');
                 this.trigger('ready');
             },
             OnBufferingStart: function () {
@@ -126,12 +136,13 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                 }
             },
             _play: function (options) {
+                var url = options.url;
                 switch (options.type) {
                     case 'hls':
-                        options.url+='|COMPONENT=HLS'
+                        url += '|COMPONENT=HLS'
                 }
-
-                this.doPlugin('InitPlayer', options.url);
+                alert(url);
+                this.doPlugin('InitPlayer', url);
                 this.doPlugin('StartPlayback', options.from || 0);
             },
             _stop: function () {
@@ -144,7 +155,10 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                     args = Array.prototype.slice.call(arguments, 1, arguments.length) || [];
 
                 if (this.usePlayerObject) {
+
+
                     result = safeApply(plugin, methodName, args);
+
                 }
                 else {
                     if (methodName.indexOf('Buffer') != -1) {
