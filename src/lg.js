@@ -37,7 +37,7 @@ if (navigator.userAgent.toLowerCase().indexOf('netcast') != -1) {
                 this.trigger('update');
             },
             onBuffering: function (isStarted) {
-                this.fire(isStarted ? 'bufferingStart' : 'bufferingEnd');
+                this.trigger(isStarted ? 'bufferingBegin' : 'bufferingEnd');
             },
             _play: function (options) {
                 clearInterval(updateInterval);

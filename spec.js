@@ -1,9 +1,7 @@
 describe('Player', function () {
 
     var currentURL = Config.trailer;
-    var currentType='';
-
-
+    var currentType = '';
 
 
     afterEach(function () {
@@ -30,9 +28,7 @@ describe('Player', function () {
     describe('has video info, and ready event', function () {
 
 
-
-
-        it('support ready', function(){
+        it('support ready', function () {
             var spy = jasmine.createSpy('ready handler');
             Player.on('ready', spy);
 
@@ -46,21 +42,20 @@ describe('Player', function () {
             }, 'ready have been triggered', 2000);
         });
 
-        it('gets video duration', function(){
+        it('gets video duration', function () {
             runs(function () {
                 var info = Player.videoInfo;
                 expect(formatDuration(info.duration)).toBe(Config.trailerDuration);
             });
         });
 
-        it('gets video resolution', function(){
+        it('gets video resolution', function () {
             runs(function () {
                 var info = Player.videoInfo;
                 expect(info.width).toBe(Config.trailerWidth);
                 expect(info.height).toBe(Config.trailerHeight);
             });
         });
-
 
 
         var spyStop = jasmine.createSpy('stop handler');
@@ -75,11 +70,10 @@ describe('Player', function () {
         }, 'stop have been triggered', 1000);
 
 
-
     });
 
 
-    xit('support buffering and update time events', function () {
+    describe('support buffering and update time events', function () {
 
 
         runs(function () {
@@ -87,46 +81,62 @@ describe('Player', function () {
                 url: Config.movie
             });
         });
-
-        var spy = jasmine.createSpy('bufferingEnd handler');
-
-        var spy2 = jasmine.createSpy('update handler');
-
-        var date;
-        runs(function () {
-            Player.on('bufferingEnd', spy)
-        });
-
-        waitsFor(function () {
-            return spy.calls.length == 1
-        }, 'bufferingEnd have been triggered', 15000);
+        var begin = jasmine.createSpy('bufferingEnd handler');
+        var end = jasmine.createSpy('end handler');
 
 
         runs(function () {
-            Player.on('update', spy2)
+            Player.on('bufferingBegin', begin);
+        });
+        it('support bufferingBegin', function () {
+            waitsFor(function () {
+                return begin.calls.length == 1
+            }, 'bufferingBegin have been triggered', 15000);
+        });
+        runs(function () {
+            Player.on('bufferingEnd', end);
+        });
+
+        it('support bufferingEnd', function () {
+            waitsFor(function () {
+                return end.calls.length == 1
+            }, 'bufferingEnd have been triggered', 15000);
         });
 
 
-        waitsFor(function () {
-            return spy2.calls.length == 1;
-        }, 'update have been triggered', 2000);
+        it('support update', function () {
+            var update = jasmine.createSpy('update handler');
 
+
+            var date;
+            runs(function () {
+                Player.on('update', update)
+            });
+
+
+            waitsFor(function () {
+                return update.calls.length == 1;
+            }, 'update have been triggered', 2000);
+
+
+            runs(function () {
+                expect(Math.floor(Player.videoInfo.currentTime)).toBe(0);
+                date = (new Date().getTime());
+            });
+
+            waitsFor(function () {
+                return Player.videoInfo.currentTime >= 2;
+            }, '2 seconds playing', 10000);
+
+
+            runs(function () {
+                expect(Math.round((new Date().getTime() - date) / 1000)).toBe(2);
+            });
+        });
 
         runs(function () {
-            expect(Math.floor(Player.videoInfo.currentTime)).toBe(0);
-            date = (new Date().getTime());
+            Player.stop();
         });
-
-        waitsFor(function () {
-            return Player.videoInfo.currentTime >= 2;
-        }, '2 seconds playing', 10000);
-
-
-        runs(function () {
-            expect(Math.round((new Date().getTime() - date) / 1000)).toBe(2);
-        });
-
-
     });
 
 
