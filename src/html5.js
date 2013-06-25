@@ -13,19 +13,16 @@ Player.extend({
         });
 
 
-        this.$video_container.on('loadstart', function (e) {
+        this.$video_container.on('loadstart',function (e) {
             self.trigger('bufferingBegin');
-        });
-
-        this.$video_container.on('playing', function (e) {
-            self.trigger('bufferingEnd');
-        });
-
-
-        this.$video_container.on('timeupdate', function (e) {
-            self.videoInfo.currentTime=video.currentTime;
-            self.trigger('update');
-        });
+        }).on('playing',function () {
+                self.trigger('bufferingEnd');
+            }).on('timeupdate',function () {
+                self.videoInfo.currentTime = video.currentTime;
+                self.trigger('update');
+            }).on('ended', function () {
+                self.trigger('complete');
+            });
 
 
         this.$video_container.on('abort canplay canplaythrough canplaythrough durationchange emptied ended error loadeddata loadedmetadata loadstart mozaudioavailable pause play playing ratechange seeked seeking suspend volumechange waiting', function (e) {
@@ -59,12 +56,14 @@ Player.extend({
          */
     },
     _play: function (options) {
-        console.log(options.url);
         this.$video_container.attr('src', options.url);
         this.$video_container[0].play();
     },
     _stop: function () {
         this.$video_container[0].pause();
         this.$video_container[0].src = '';
+    },
+    seek: function (time) {
+        this.$video_container[0].currentTime = time;
     }
 });

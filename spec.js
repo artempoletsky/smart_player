@@ -4,10 +4,6 @@ describe('Player', function () {
     var currentType = '';
 
 
-    afterEach(function () {
-
-
-    });
 
 
     var formatDuration = function (secs) {
@@ -28,7 +24,7 @@ describe('Player', function () {
     describe('has video info, and ready event', function () {
 
 
-        it('support ready', function () {
+        it('supports ready', function () {
             var spy = jasmine.createSpy('ready handler');
             Player.on('ready', spy);
 
@@ -42,14 +38,14 @@ describe('Player', function () {
             }, 'ready have been triggered', 2000);
         });
 
-        it('gets video duration', function () {
+        it('has video duration', function () {
             runs(function () {
                 var info = Player.videoInfo;
                 expect(formatDuration(info.duration)).toBe(Config.trailerDuration);
             });
         });
 
-        it('gets video resolution', function () {
+        it('has video resolution', function () {
             runs(function () {
                 var info = Player.videoInfo;
                 expect(info.width).toBe(Config.trailerWidth);
@@ -59,36 +55,41 @@ describe('Player', function () {
 
 
         var spyStop = jasmine.createSpy('stop handler');
-        runs(function () {
-            Player.on('stop', spyStop);
-            Player.stop();
-            expect(spyStop).toHaveBeenCalled();
+
+
+        it('supports stop method', function () {
+            runs(function () {
+                Player.on('stop', spyStop);
+                Player.stop();
+                expect(spyStop).toHaveBeenCalled();
+            });
+
+            waitsFor(function () {
+                return spyStop.calls.length == 1
+            }, 'stop have been triggered', 1000);
+
         });
-
-        waitsFor(function () {
-            return spyStop.calls.length == 1
-        }, 'stop have been triggered', 1000);
-
-
     });
 
 
     describe('support buffering and update time events', function () {
 
-
-        runs(function () {
-            Player.play({
-                url: Config.movie
-            });
-        });
         var begin = jasmine.createSpy('bufferingEnd handler');
         var end = jasmine.createSpy('end handler');
 
+        it('supports bufferingBegin', function () {
 
-        runs(function () {
-            Player.on('bufferingBegin', begin);
-        });
-        it('support bufferingBegin', function () {
+
+            runs(function () {
+
+                Player.play({
+                    url: Config.movie
+                });
+
+                Player.on('bufferingBegin', begin);
+            });
+
+
             waitsFor(function () {
                 return begin.calls.length == 1
             }, 'bufferingBegin have been triggered', 15000);
@@ -97,14 +98,14 @@ describe('Player', function () {
             Player.on('bufferingEnd', end);
         });
 
-        it('support bufferingEnd', function () {
+        it('supports bufferingEnd', function () {
             waitsFor(function () {
                 return end.calls.length == 1
             }, 'bufferingEnd have been triggered', 15000);
         });
 
 
-        it('support update', function () {
+        it('supports update', function () {
             var update = jasmine.createSpy('update handler');
 
 
@@ -134,9 +135,30 @@ describe('Player', function () {
             });
         });
 
+
+        it('supports seek method', function () {
+            Player.seek(120);
+            waitsFor(function () {
+                return Player.videoInfo.currentTime >= 120 && Player.videoInfo.currentTime <= 121
+            }, 'seeking success', 15000);
+        });
+
+
+        it('supports complete event', function () {
+            Player.seek(Player.videoInfo.duration - 2);
+            var onComplete = jasmine.createSpy('complete spy');
+            Player.on('complete', onComplete);
+            waitsFor(function () {
+                return onComplete.calls.length == 1;
+            }, 'onComplete was called', 15000);
+        });
+
+
         runs(function () {
             Player.stop();
         });
+
+
     });
 
 

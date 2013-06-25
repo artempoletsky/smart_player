@@ -25,7 +25,8 @@ var Player = {
     },
     videoInfo: {
 
-    }
+    },
+    autoInit: true
 };
 
 
@@ -53,13 +54,12 @@ var Player = {
 
     Player.extend(eventProto);
 
-    if (window.$ && false) {
+    if (Player.autoInit) {
         $(function () {
-            Player.init()
-        });
-    } else {
-        window.addEventListener('DOMContentLoaded', function () {
-            Player.init();
+            $('body').on('load', function () {
+                Player.init();
+            });
         });
     }
+
 }());

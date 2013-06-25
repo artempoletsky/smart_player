@@ -30,37 +30,55 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
         Player.extend({
             usePlayerObject: true,
             init: function () {
-                var self=this;
+                var self = this;
                 //document.body.onload=function(){
-                    if (self.usePlayerObject) {
-                        //self.$plugin = $('<object id="pluginPlayer" border=0 classid="clsid:SAMSUNG-INFOLINK-PLAYER" style="position: absolute; left: 0; top: 0; width: 1280px; height: 720px;"></object>');
-                        self.plugin = document.getElementById('pluginPlayer');
-                        $('body').append(self.$plugin);
+                if (self.usePlayerObject) {
+                    //self.$plugin = $('<object id="pluginPlayer" border=0 classid="clsid:SAMSUNG-INFOLINK-PLAYER" style="position: absolute; left: 0; top: 0; width: 1280px; height: 720px;"></object>');
+                    self.plugin = document.getElementById('pluginPlayer');
+                    $('body').append(self.$plugin);
 
 
-                    } else {
-                        self.plugin = sf.core.sefplugin('Player');
-                    }
+                } else {
+                    self.plugin = sf.core.sefplugin('Player');
+                }
 
 
-                    if (!self.plugin) {
-                        throw new Error('failed to set plugin');
-                    }
+                if (!self.plugin) {
+                    throw new Error('failed to set plugin');
+                }
 
-                    self.plugin.OnStreamInfoReady = 'Player.OnStreamInfoReady';
-                    //self.plugin.OnRenderingComplete = 'Player.OnRenderingComplete';
-                    self.plugin.OnCurrentPlayTime = 'Player.OnCurrentPlayTime';
-                    self.plugin.OnCurrentPlaybackTime = 'Player.OnCurrentPlayTime';
-                    self.plugin.OnBufferingStart = 'Player.OnBufferingStart';
-                    //self.plugin.OnBufferingProgress = 'Player.OnBufferingProgress';
-                    self.plugin.OnBufferingComplete = 'Player.OnBufferingComplete';
-                    //self.plugin.OnConnectionFailed = 'Player.onError';
-                    //self.plugin.OnNetworkDisconnected = 'Player.onError';
-                    //self.plugin.OnAuthenticationFailed = 'Player.OnAuthenticationFailed';
+                self.plugin.OnStreamInfoReady = 'Player.OnStreamInfoReady';
+                //self.plugin.OnRenderingComplete = 'Player.OnRenderingComplete';
+                self.plugin.OnCurrentPlayTime = 'Player.OnCurrentPlayTime';
+                self.plugin.OnCurrentPlaybackTime = 'Player.OnCurrentPlayTime';
+                self.plugin.OnBufferingStart = 'Player.OnBufferingStart';
+                //self.plugin.OnBufferingProgress = 'Player.OnBufferingProgress';
+                self.plugin.OnBufferingComplete = 'Player.OnBufferingComplete';
+                //self.plugin.OnConnectionFailed = 'Player.onError';
+                //self.plugin.OnNetworkDisconnected = 'Player.onError';
+                //self.plugin.OnAuthenticationFailed = 'Player.OnAuthenticationFailed';
 
-                    self.plugin.OnEvent = 'Player.onEvent';
+                self.plugin.OnEvent = 'Player.onEvent';
                 //}
 
+            },
+            seek: function (time) {
+                if (time <= 0) {
+                    time = 0;
+                }
+                /*if ( this.duration <= time + 1 ) {
+                 this.videoInfo.currentTime = this.videoInfo.duration;
+                 }
+                 else {*/
+                var jump = Math.floor(time - this.videoInfo.currentTime);
+                if (jump < 0) {
+                    this.doPlugin('JumpBackward', -jump);
+                }
+                else {
+                    this.doPlugin('JumpForward', jump);
+                }
+                //  this.currentTime = time;
+                //}
             },
             onEvent: function (event, arg1, arg2) {
 
