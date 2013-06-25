@@ -1,5 +1,8 @@
 if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
     (function () {
+        var curAudio = 0;
+
+
         var safeApply = function (self, method, args) {
             try {
                 switch (args.length) {
@@ -28,7 +31,7 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
             }
         }
         Player.extend({
-            usePlayerObject: true,
+            usePlayerObject: false,
             init: function () {
                 var self = this;
                 //document.body.onload=function(){
@@ -48,7 +51,7 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                 }
 
                 self.plugin.OnStreamInfoReady = 'Player.OnStreamInfoReady';
-                //self.plugin.OnRenderingComplete = 'Player.OnRenderingComplete';
+                self.plugin.OnRenderingComplete = 'Player.OnRenderingComplete';
                 self.plugin.OnCurrentPlayTime = 'Player.OnCurrentPlayTime';
                 self.plugin.OnCurrentPlaybackTime = 'Player.OnCurrentPlayTime';
                 self.plugin.OnBufferingStart = 'Player.OnBufferingStart';
@@ -70,7 +73,9 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                  this.videoInfo.currentTime = this.videoInfo.duration;
                  }
                  else {*/
-                var jump = Math.floor(time - this.videoInfo.currentTime);
+                var jump = Math.floor(time - this.videoInfo.currentTime - 1);
+                this.videoInfo.currentTime = time;
+                alert('jump: ' + jump);
                 if (jump < 0) {
                     this.doPlugin('JumpBackward', -jump);
                 }
@@ -82,7 +87,7 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
             },
             onEvent: function (event, arg1, arg2) {
 
-                alert('playerEvent: ' + event);
+               // alert('playerEvent: ' + event);
                 switch (event) {
                     case 9:
                         this.OnStreamInfoReady();
@@ -93,7 +98,7 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                         break;
 
                     case 8:
-                        //this.OnRenderingComplete();
+                        this.OnRenderingComplete();
                         break;
                     case 14:
                         this.OnCurrentPlayTime(arg1);
@@ -108,6 +113,10 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                         this.OnBufferingStart();
                         break;
                 }
+            },
+            OnRenderingComplete: function () {
+                alert('PLAYER COMPLETE');
+                Player.trigger('complete');
             },
             OnStreamInfoReady: function () {
                 var duration, width, height, resolution;
@@ -149,6 +158,7 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
             },
             OnCurrentPlayTime: function (millisec) {
                 if (this._state == 'play') {
+                    alert(millisec / 1000);
                     this.videoInfo.currentTime = millisec / 1000;
                     this.trigger('update');
                 }
@@ -159,7 +169,6 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                     case 'hls':
                         url += '|COMPONENT=HLS'
                 }
-                alert(url);
                 this.doPlugin('InitPlayer', url);
                 this.doPlugin('StartPlayback', options.from || 0);
             },
@@ -187,6 +196,27 @@ if (navigator.userAgent.toLowerCase().indexOf('maple') != -1) {
                 }
 
                 return result;
+            },
+            audio: {
+                set: function (index) {
+                    /*one is for audio*/
+                    //http://www.samsungdforum.com/SamsungDForum/ForumView/f0cd8ea6961d50c3?forumID=63d211aa024c66c9
+                    Player.doPlugin('SetStreamID', 1, index);
+                    curAudio = index;
+                },
+                get: function () {
+                    /*one is for audio*/
+                    var len = Player.doPlugin('GetTotalNumOfStreamID', 1);
+
+                    var result = [];
+                    for (var i = 0; i < len; i++) {
+                        result.push(Player.doPlugin('GetStreamLanguageInfo', 1, i));
+                    }
+                    return result;
+                },
+                cur: function () {
+                    return curAudio;
+                }
             }
         });
     }());

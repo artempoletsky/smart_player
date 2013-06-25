@@ -4,8 +4,6 @@ describe('Player', function () {
     var currentType = '';
 
 
-
-
     var formatDuration = function (secs) {
         var hours = Math.floor(secs / (60 * 60));
         var divisor_for_minutes = secs % (60 * 60);
@@ -21,7 +19,7 @@ describe('Player', function () {
         return (hours ? hours + ':' : '') + minutes + ":" + seconds;
     };
 
-    describe('has video info, and ready event', function () {
+    describe('basic support', function () {
 
 
         it('supports ready', function () {
@@ -72,7 +70,7 @@ describe('Player', function () {
     });
 
 
-    describe('support buffering and update time events', function () {
+    describe('extended support', function () {
 
         var begin = jasmine.createSpy('bufferingEnd handler');
         var end = jasmine.createSpy('end handler');
@@ -94,11 +92,13 @@ describe('Player', function () {
                 return begin.calls.length == 1
             }, 'bufferingBegin have been triggered', 15000);
         });
-        runs(function () {
-            Player.on('bufferingEnd', end);
-        });
+
 
         it('supports bufferingEnd', function () {
+            runs(function () {
+                Player.on('bufferingEnd', end);
+            });
+
             waitsFor(function () {
                 return end.calls.length == 1
             }, 'bufferingEnd have been triggered', 15000);
@@ -107,9 +107,8 @@ describe('Player', function () {
 
         it('supports update', function () {
             var update = jasmine.createSpy('update handler');
-
-
             var date;
+
             runs(function () {
                 Player.on('update', update)
             });
@@ -117,7 +116,7 @@ describe('Player', function () {
 
             waitsFor(function () {
                 return update.calls.length == 1;
-            }, 'update have been triggered', 2000);
+            }, 'update have been triggered', 5000);
 
 
             runs(function () {
@@ -127,55 +126,92 @@ describe('Player', function () {
 
             waitsFor(function () {
                 return Player.videoInfo.currentTime >= 2;
-            }, '2 seconds playing', 10000);
+            }, '2 seconds playing', 5000);
 
-
-            runs(function () {
-                expect(Math.round((new Date().getTime() - date) / 1000)).toBe(2);
-            });
         });
 
 
+        if (Config.movieAudioTracksLength > 1) {
+            it('gets audio tracks array', function () {
+                runs(function () {
+                    expect(Player.audio.get().length).toBe(Config.movieAudioTracksLength);
+                    expect(Player.audio.cur()).toBe(0);
+                });
+            });
+
+
+            it('supports audio track switch', function () {
+                runs(function () {
+                    Player.audio.set(1);
+                    expect(Player.audio.cur()).toBe(1);
+                });
+            });
+        }
+
+
         it('supports seek method', function () {
-            Player.seek(120);
+            var update = jasmine.createSpy('update spy');
+
+            runs(function () {
+                Player.on('update', update);
+                Player.seek(120);
+            });
+
             waitsFor(function () {
-                return Player.videoInfo.currentTime >= 120 && Player.videoInfo.currentTime <= 121
+                return update.calls.length == 1
+            }, 'update handler was called', 25000);
+
+            runs(function () {
+                expect(Player.videoInfo.currentTime).toBeGreaterThan(118);
+                expect(Player.videoInfo.currentTime).toBeLessThan(122);
             }, 'seeking success', 15000);
         });
 
 
         it('supports complete event', function () {
-            Player.seek(Player.videoInfo.duration - 2);
             var onComplete = jasmine.createSpy('complete spy');
             Player.on('complete', onComplete);
+
+            var timeToWait = 10;
+            waits(3000);
+            runs(function () {
+                Player.seek(Player.videoInfo.duration - timeToWait);
+            });
+
+
             waitsFor(function () {
                 return onComplete.calls.length == 1;
-            }, 'onComplete was called', 15000);
-        });
+            }, 'onComplete was called', 15000 + timeToWait * 1000);
 
-
-        runs(function () {
-            Player.stop();
-        });
-
-
-    });
-
-
-    xit('support hls', function () {
-
-        runs(function () {
-            Player.play({
-                url: Config.hls,
-                type: 'hls'
+            runs(function () {
+                Player.stop();
             });
         });
 
 
-        var spy = jasmine.createSpy('ready handler');
-        Player.on('ready', spy);
-        waitsFor(function () {
-            return spy.calls.length == 1
-        }, 'ready have been triggered', 20000);
     });
+
+    xdescribe('hls', function () {
+        it('support hls', function () {
+
+            runs(function () {
+                Player.play({
+                    url: Config.hls,
+                    type: 'hls'
+                });
+            });
+
+
+            var spy = jasmine.createSpy('ready handler');
+            Player.on('ready', spy);
+            waitsFor(function () {
+                return spy.calls.length == 1
+            }, 'ready have been triggered', 20000);
+
+            runs(function () {
+                Player.stop();
+            });
+        });
+    });
+
 });

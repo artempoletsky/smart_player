@@ -65,5 +65,17 @@ Player.extend({
     },
     seek: function (time) {
         this.$video_container[0].currentTime = time;
+    },
+    audio: {
+        //https://bugzilla.mozilla.org/show_bug.cgi?id=744896
+        set: function (index) {
+
+        },
+        get: function () {
+
+        },
+        cur: function () {
+
+        }
     }
 });
