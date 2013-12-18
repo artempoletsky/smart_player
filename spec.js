@@ -4,20 +4,7 @@ describe('Player', function () {
     var currentType = '';
 
 
-    var formatDuration = function (secs) {
-        var hours = Math.floor(secs / (60 * 60));
-        var divisor_for_minutes = secs % (60 * 60);
-        var minutes = Math.floor(divisor_for_minutes / 60);
-        var divisor_for_seconds = divisor_for_minutes % 60;
-        var seconds = Math.ceil(divisor_for_seconds);
-        if (seconds < 10) {
-            seconds = "0" + seconds;
-        }
-        if (minutes < 10) {
-            minutes = "0" + minutes;
-        }
-        return (hours ? hours + ':' : '') + minutes + ":" + seconds;
-    };
+
 
     describe('basic support', function () {
 
@@ -39,7 +26,7 @@ describe('Player', function () {
         it('has video duration', function () {
             runs(function () {
                 var info = Player.videoInfo;
-                expect(formatDuration(info.duration)).toBe(Config.trailerDuration);
+                expect(Player.formatTime(info.duration)).toBe(Config.trailerDuration);
             });
         });
 
@@ -173,7 +160,7 @@ describe('Player', function () {
             Player.on('complete', onComplete);
 
             var timeToWait = 10;
-            waits(3000);
+
             runs(function () {
                 Player.seek(Player.videoInfo.duration - timeToWait);
             });
